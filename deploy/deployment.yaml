@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: valheim-game-server
+      game: Valheim
+  template:
+    metadata:
+      labels:
+        app: valheim-game-server
+        game: Valheim
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: game-server
+        image: game-server
+        env:
+        - name: WORLD_NAME
+          value: Zbiki
+        - name: SERVER_NAME
+          value: danmx-DO-Zbiki
+        - name: SERVER_PASS
+          valueFrom:
+            secretKeyRef:
+              name: valheim-game-server-password
+              key: password.txt
+        - name: SERVER_PUBLIC
+          value: "false"
+        - name: SYSLOG_REMOTE_AND_LOCAL
+          value: "false"
+        - name: BACKUPS_DIRECTORY
+          value: "/backups"
+        - name: BACKUPS_MAX_AGE
+          value: "2"
+        ports:
+        - containerPort: 2456
+          name: game1
+          protocol: UDP
+        - containerPort: 2457
+          name: game2
+          protocol: UDP
+        - containerPort: 2458
+          name: game3
+          protocol: UDP
+        volumeMounts:
+        - name: data
+          mountPath: /config
+        - name: backups
+          mountPath: /backups
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: valheim-game-data
+      - name: backups
+        persistentVolumeClaim:
+          claimName: valheim-game-backups
