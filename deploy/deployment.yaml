@@ -37,7 +37,7 @@ spec:
         - name: BACKUPS_DIRECTORY
           value: "/backups"
         - name: BACKUPS_MAX_AGE
-          value: "2"
+          value: "1"
         ports:
         - containerPort: 2456
           name: game1
