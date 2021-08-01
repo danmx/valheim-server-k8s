@@ -21,7 +21,7 @@ resources:
 
 images:
   - name: game-server
-    newName: lloesche/valheim-server
+    newName: ghcr.io/lloesche/valheim-server
     newTag: latest
 
 secretGenerator:
