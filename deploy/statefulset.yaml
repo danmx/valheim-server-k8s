@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -17,46 +18,64 @@ spec:
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-      - name: game-server
-        image: game-server
-        imagePullPolicy: Always
-        env:
-        - name: WORLD_NAME
-          value: Zbiki
-        - name: SERVER_NAME
-          value: danmx-DO-Zbiki
-        - name: SERVER_PASS
-          valueFrom:
-            secretKeyRef:
-              name: valheim-game-server-password
-              key: password.txt
-        - name: SERVER_PUBLIC
-          value: "false"
-        - name: SYSLOG_REMOTE_AND_LOCAL
-          value: "false"
-        - name: BACKUPS_DIRECTORY
-          value: "/backups"
-        - name: BACKUPS_MAX_AGE
-          value: "1"
-        ports:
-        - containerPort: 2456
-          name: game1
-          protocol: UDP
-        - containerPort: 2457
-          name: game2
-          protocol: UDP
-        - containerPort: 2458
-          name: game3
-          protocol: UDP
-        volumeMounts:
-        - name: data
-          mountPath: /config
-        - name: backups
-          mountPath: /backups
+        - name: game-server
+          image: game-server
+          imagePullPolicy: Always
+          env:
+            - name: WORLD_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: valheim-game-server-envs
+                  key: WORLD_NAME
+            - name: SERVER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: valheim-game-server-envs
+                  key: SERVER_NAME
+            - name: SERVER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: valheim-game-server-password
+                  key: password.txt
+            - name: SERVER_PUBLIC
+              valueFrom:
+                configMapKeyRef:
+                  name: valheim-game-server-envs
+                  key: SERVER_PUBLIC
+            - name: SYSLOG_REMOTE_AND_LOCAL
+              valueFrom:
+                configMapKeyRef:
+                  name: valheim-game-server-envs
+                  key: SYSLOG_REMOTE_AND_LOCAL
+            - name: BACKUPS_DIRECTORY
+              valueFrom:
+                configMapKeyRef:
+                  name: valheim-game-server-envs
+                  key: BACKUPS_DIRECTORY
+            - name: BACKUPS_MAX_AGE
+              valueFrom:
+                configMapKeyRef:
+                  name: valheim-game-server-envs
+                  key: BACKUPS_MAX_AGE
+          ports:
+            - containerPort: 2456
+              name: game1
+              protocol: UDP
+            - containerPort: 2457
+              name: game2
+              protocol: UDP
+            - containerPort: 2458
+              name: game3
+              protocol: UDP
+          volumeMounts:
+            - name: data
+              mountPath: /config
+            - name: backups
+              mountPath: /backups
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: valheim-game-data
-      - name: backups
-        persistentVolumeClaim:
-          claimName: valheim-game-backups
+        - name: data
+          persistentVolumeClaim:
+            claimName: valheim-game-data
+        - name: backups
+          persistentVolumeClaim:
+            claimName: valheim-game-backups
