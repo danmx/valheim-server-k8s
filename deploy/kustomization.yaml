@@ -14,9 +14,9 @@ commonLabels:
 
 resources:
 - namespace.yaml
-- deployment.yaml
 - service.yaml
 - persistentvolumeclaims.yaml
+- statefulset.yaml
 
 images:
 - name: game-server

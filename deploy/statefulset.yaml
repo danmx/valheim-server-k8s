@@ -1,15 +1,14 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: server
 spec:
-  strategy:
-    type: Recreate
-  replicas: 1
   selector:
     matchLabels:
       app: valheim-game-server
       game: Valheim
+  serviceName: server
+  replicas: 1
   template:
     metadata:
       labels:
@@ -20,6 +19,7 @@ spec:
       containers:
       - name: game-server
         image: game-server
+        imagePullPolicy: Always
         env:
         - name: WORLD_NAME
           value: Zbiki
