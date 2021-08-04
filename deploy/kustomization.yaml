@@ -24,11 +24,11 @@ images:
     newName: ghcr.io/lloesche/valheim-server
     newTag: latest
 
-secretGenerator:
-  - name: server-password
-    files:
-      - secret/password.txt
-    type: Opaque
+# secretGenerator:
+#   - name: server-password
+#     files:
+#       - secret/password.txt
+#     type: Opaque
 
 configMapGenerator:
   - name: server-envs
